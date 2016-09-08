@@ -11,6 +11,5 @@ public enum CategoriesTokens {
 	opNeg,
 	opImp, 
 	opBiImp, 
-	prNeg,
 	unknown
 }
