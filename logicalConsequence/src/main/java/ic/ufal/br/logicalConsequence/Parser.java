@@ -9,12 +9,13 @@ public class Parser {
 		this.la = la;
 	}
 	
-	void nextToken(){
-		this.token = la.nextToken();
+	void start(){
+		nextToken();
+		E();
 	}
 	
-	void start(){
-		E();
+	void nextToken(){
+		this.token = la.nextToken();
 	}
 
 	void E(){
@@ -23,8 +24,8 @@ public class Parser {
 	}
 	
 	void Er(){
-		nextToken();
 		if(token.categ == Categories.opBiImp){
+			nextToken();
 			C();
 			Er();
 		}
@@ -38,8 +39,8 @@ public class Parser {
 	}
 	
 	void Cr(){
-		nextToken();
 		if(token.categ == Categories.opImp){
+			nextToken();
 			D();
 			Cr();
 		}
@@ -53,8 +54,8 @@ public class Parser {
 	}
 	
 	void Dr(){
-		nextToken();
 		if(token.categ == Categories.opDisj){
+			nextToken();
 			F();
 			Dr();
 		}
@@ -68,8 +69,8 @@ public class Parser {
 	}
 	
 	void Fr(){
-		nextToken();
 		if(token.categ == Categories.opConj){
+			nextToken();
 			G();
 			Fr();
 		}
@@ -78,21 +79,25 @@ public class Parser {
 	}
 	
 	void G(){
-		nextToken();
-		if(token.categ == Categories.opDisj)
+		if(token.categ == Categories.opDisj){
+			nextToken();
 			H();
-		else if(token.categ == Categories.abPar)
-			E();
-		else if(token.categ != Categories.id)
-			System.out.println("Entrada inválida!");
+		}
+		else
+			H();
 	}
 	
 	void H(){
-		nextToken();
-		if(token.categ == Categories.abPar)
+		if(token.categ == Categories.abPar){
+			nextToken();
 			E();
-		else if(token.categ != Categories.id && token.categ != Categories.fcPar)
+		}
+		else if(token.categ == Categories.id)
+			nextToken();
+		else{
 			System.out.println("Entrada inválida!");
+			System.exit(0);
+		}
 	}
 	
 }
