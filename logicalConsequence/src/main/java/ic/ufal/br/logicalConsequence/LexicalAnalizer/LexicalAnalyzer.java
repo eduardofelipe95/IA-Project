@@ -58,6 +58,7 @@ public class LexicalAnalyzer {
 		do{
 			currentChar = nextChar();
 			
+			
 			if(currentChar == '|' && token.length() == 0){
 				token += currentChar;
 				currentChar = nextChar();
@@ -73,7 +74,7 @@ public class LexicalAnalyzer {
 			}else if(!(currentChar == '\0' || currentChar == '\n' || currentChar == ' ' || currentChar == '	')){
 				token += currentChar;
 				categ = tokenCateg(token);
-				
+				System.out.println(token + " " + categ);
 				if(categ != CategoriesTokens.unknown){
 					break;
 				}
@@ -81,6 +82,8 @@ public class LexicalAnalyzer {
 			
 		}
 		while(currentChar != '\0');
+		
+		
 		if(!token.equals(""))
 			nextToken = new Token(token, categ, currentLine, lastColumn);
 		else{
@@ -109,13 +112,16 @@ public class LexicalAnalyzer {
 				return CategoriesTokens.opDisj;
 			}else if(token.equals("->")){
 				return CategoriesTokens.opImp;
+			}else if(token.equals("~")){
+				return CategoriesTokens.opNeg;
 			}else if(token.equals("<->")){
 				return CategoriesTokens.opBiImp;
-			}else if(token.equals(token.matches("~?\\w"))){
+			}else if(token.equals(token.equals("A"))){
 				return CategoriesTokens.opBiImp;
 			}
 				
 			else{
+				
 				//System.out.println("Token não reconhecido.");
 				return CategoriesTokens.unknown;
 			}
