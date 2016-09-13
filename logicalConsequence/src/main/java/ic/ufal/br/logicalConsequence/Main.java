@@ -15,14 +15,14 @@ public class Main {
 //        	token = lexicalAnalyzer.nextToken();
 //    	}
     	
-    	Parser parser = new Parser(lexicalAnalyzer);
-    	parser.start();
+//    	Parser parser = new Parser(lexicalAnalyzer);
+//    	parser.start();
     	
-//    	RemImp remImp = new RemImp(lexicalAnalyzer);
-//    	remImp.start();
+    	RemImp remImp = new RemImp(lexicalAnalyzer);
+    	remImp.start();
     	
-//		for(String token : parser.tokens){
-//    		System.out.print(token);
-//    	}
+		for(String token : remImp.tokens){
+    		System.out.print(token);
+    	}
     }
 }

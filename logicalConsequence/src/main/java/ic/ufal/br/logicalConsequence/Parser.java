@@ -17,6 +17,11 @@ public class Parser {
 	void nextToken(){
 		this.token = la.nextToken();
 	}
+	
+	void error(){
+		System.out.println("Entrada inválida!");
+		System.exit(0);
+	}
 
 	void E(){
 		C();
@@ -91,13 +96,14 @@ public class Parser {
 		if(token.categ == Categories.abPar){
 			nextToken();
 			E();
+			if(token.categ != Categories.fcPar)
+				error();
+			nextToken();
 		}
 		else if(token.categ == Categories.id)
 			nextToken();
-		else{
-			System.out.println("Entrada inválida!");
-			System.exit(0);
-		}
+		else if(token.categ != Categories.EOF)
+			error();
 	}
 	
 }

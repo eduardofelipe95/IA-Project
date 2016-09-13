@@ -3,20 +3,17 @@ package ic.ufal.br.logicalConsequence;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LexicalAnalyzer {
+	private int line, currentColumn, lastColumn;
 	private String sentence;
-	private int currentLine, currentColumn, lastLine, lastColumn;
-	private String line;
 	private String filePath;
 	
-	private final char LINE_BREAK = '\n';
+	private final char EOF = '\0';
 	
 	public LexicalAnalyzer(String filePath) throws IOException{
 		this.filePath = filePath;
-		this.currentLine = 0;
+		this.line = 0;
 		this.currentColumn = 0;
 		this.readFile();
 		this.normalize();
@@ -39,7 +36,7 @@ public class LexicalAnalyzer {
 			return sentence.charAt(currentColumn++);
 		}
 		
-		return '\0';	
+		return EOF;
 	}
 	
 	public Token nextToken(){
@@ -47,70 +44,48 @@ public class LexicalAnalyzer {
 		String token = "";
 		Token nextToken = null;
 		Categories categ = null;
-		boolean flag = false;
-		int column = 0;
 		
 		do{
 			currentChar = nextChar();
-			
-			if(currentChar == '|' && token.length() == 0){
-				token += currentChar;
-				currentChar = nextChar();
-				
-				if(currentChar == '='){
-					token += currentChar;
-					categ = tokenCateg(token);
-					break;
-				}else{
-					categ = Categories.unknown;
-					break;
-				}
-			}
-			else if(!(currentChar == '\0' || currentChar == '\n' || currentChar == ' ' || currentChar == '	')){
+			if(!(currentChar == EOF || currentChar == '\n' || currentChar == ' ' || currentChar == '	')){
 				token += currentChar;
 				categ = tokenCateg(token);
-				//System.out.println(token + " " + categ);
-				if(categ != Categories.unknown){
+				if(categ != Categories.unknown)
 					break;
-				}
 			}
 		}
-		while(currentChar != '\0');
+		while(currentChar != EOF);
 		
-		if(!token.equals(""))
-			nextToken = new Token(token, categ, lastLine, lastColumn);
-		else
-			nextToken = new Token(token, Categories.EOF, lastLine, lastColumn);
+		if(token.equals(""))
+			categ = Categories.EOF;
+		
+		nextToken = new Token(token, categ, line, lastColumn);
 		
 		return nextToken;
-		
 	}
 	
 	private Categories tokenCateg(String token){
-			if(token.equals("(")){
-				return Categories.abPar;
-			}else if(token.equals(")")){
-				return Categories.fcPar;
-			}else if(token.equals("~")){
-				return Categories.opNeg;
-			}else if(token.equals("{")){
-				return Categories.abCh;
-			}else if(token.equals("}")){
-				return Categories.fcCh;
-			}else if(token.equals("^")){
-				return Categories.opConj;
-			}else if(token.equals("v")){
-				return Categories.opDisj;
-			}else if(token.equals("->")){
-				return Categories.opImp;
-			}else if(token.equals("<->")){
-				return Categories.opBiImp;
-			}else if(token.matches("[a-zA-Z]")){
-				return Categories.id;
-			}
-			else{
-				//System.out.println("Token não reconhecido.");
-				return Categories.unknown;
-			}
-		}
+		if(token.equals("("))
+			return Categories.abPar;
+		else if(token.equals(")"))
+			return Categories.fcPar;
+		else if(token.equals("~"))
+			return Categories.opNeg;
+		else if(token.equals("{"))
+			return Categories.abCh;
+		else if(token.equals("}"))
+			return Categories.fcCh;
+		else if(token.equals("^"))
+			return Categories.opConj;
+		else if(token.equals("v"))
+			return Categories.opDisj;
+		else if(token.equals("->"))
+			return Categories.opImp;
+		else if(token.equals("<->"))
+			return Categories.opBiImp;
+		else if(token.matches("[a-zA-Z]"))
+			return Categories.id;
+		else
+			return Categories.unknown;
+	}
 }
