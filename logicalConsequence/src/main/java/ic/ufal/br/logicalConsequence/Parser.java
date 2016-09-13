@@ -84,7 +84,7 @@ public class Parser {
 	}
 	
 	void G(){
-		if(token.categ == Categories.opDisj){
+		if(token.categ == Categories.opNeg){
 			nextToken();
 			H();
 		}

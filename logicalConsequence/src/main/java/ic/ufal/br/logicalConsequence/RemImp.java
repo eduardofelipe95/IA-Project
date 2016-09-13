@@ -13,24 +13,32 @@ public class RemImp {
 	}
 	
 	void start(){
+		nextToken();
 		E();
 	}
 	
 	void nextToken(){
-		this.token = la.nextToken();
+		token = la.nextToken();
 		tokens.add(token.lexVal());
-		//System.out.println(token.toString());
+		System.out.println(token.toString());
 	}
-
+	
+	void error(){
+		System.out.println("Entrada inválida!");
+		System.exit(0);
+	}
+	
 	void E(){
+		System.out.println("E");
 		C();
 		Er();
 	}
 	
 	void Er(){
-		nextToken();
+		System.out.println("Er");
 		if(token.categ == Categories.opBiImp){
 			//tokens.add(token);
+			nextToken();
 			C();
 			Er();
 		}
@@ -39,17 +47,18 @@ public class RemImp {
 	}
 	
 	void C(){
+		System.out.println("C");
 		D();
 		Cr(true);
 	}
 	
 	void Cr(boolean flag){
-		nextToken();
+		System.out.println("Cr");
 		if(token.categ == Categories.opImp){
-			System.out.println("entrou");
-			if(flag)
-				tokens.set(tokens.size() - 1, "v");
-			System.out.println(tokens.get(tokens.size()-1));
+			//System.out.println("entrou");
+			//if(flag)
+				//tokens.set(tokens.size() - 1, "v");
+			nextToken();
 			//tokens.add(token);
 			D();
 			Cr(false);
@@ -59,14 +68,16 @@ public class RemImp {
 	}
 	
 	void D(){
+		System.out.println("D");
 		F();
 		Dr();
 	}
 	
 	void Dr(){
-		nextToken();
+		System.out.println("Dr");
 		if(token.categ == Categories.opDisj){
 			//tokens.add(token);
+			nextToken();
 			F();
 			Dr();
 		}
@@ -75,14 +86,16 @@ public class RemImp {
 	}
 	
 	void F(){
+		System.out.println("F");
 		G();
 		Fr();
 	}
 	
 	void Fr(){
-		nextToken();
+		System.out.println("Fr");
 		if(token.categ == Categories.opConj){
 			//tokens.add(token);
+			nextToken();
 			G();
 			Fr();
 		}
@@ -91,27 +104,29 @@ public class RemImp {
 	}
 	
 	void G(){
-		nextToken();
-		if(token.categ == Categories.opDisj){
+		System.out.println("G");
+		if(token.categ == Categories.opNeg){
 			//tokens.add(token);
+			nextToken();
 			H();
 		}
-		else if(token.categ == Categories.abPar){
-			//tokens.add(token);
-			E();
-		}
-		else if(token.categ != Categories.id)
-			System.out.println("Entrada inválida!");
+		else
+			H();
 	}
 	
 	void H(){
-		nextToken();
+		System.out.println("H");
 		if(token.categ == Categories.abPar){
-			//tokens.add(token);
+			nextToken();
 			E();
+			if(token.categ != Categories.fcPar)
+				error();
+			nextToken();
 		}
-		else if(token.categ != Categories.id && token.categ != Categories.fcPar)
-			System.out.println("Entrada inválida!");
+		else if(token.categ == Categories.id)
+			nextToken();
+		else if(token.categ != Categories.EOF)
+			error();
 	}
 	
 }
