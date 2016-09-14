@@ -12,7 +12,7 @@ public class Parser {
 		this.la = la;
 	}
 	
-	Node start(){
+	LogicalExpression start(){
 		nextToken();
 		return E();
 	}
@@ -20,7 +20,7 @@ public class Parser {
 	void nextToken(){
 		token = la.nextToken();
 		tokens.add(token.lexVal());
-		System.out.println(token.toString());
+		//System.out.println(token.toString());
 	}
 	
 	void error(){
@@ -28,86 +28,86 @@ public class Parser {
 		System.exit(0);
 	}
 
-	Node E(){
-		Node CNode = C();
+	LogicalExpression E(){
+		LogicalExpression CNode = C();
 		return Er(CNode);
 	}
 	
-	Node Er(Node ErhNode){
+	LogicalExpression Er(LogicalExpression ErhNode){
 		if(token.categ == Categories.opBiImp){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			Node CNode = C();
-			Node Er1hNode = new Node(lastToken, lastCateg, ErhNode, CNode);
+			LogicalExpression CNode = C();
+			LogicalExpression Er1hNode = new BiImplication(lastToken, lastCateg, ErhNode, CNode);
 			return Er(Er1hNode);
 		}
 		else
 			return ErhNode;
 	}
 	
-	Node C(){
-		Node DNode = D();
+	LogicalExpression C(){
+		LogicalExpression DNode = D();
 		return Cr(DNode);
 	}
 	
-	Node Cr(Node CrhNode){
+	LogicalExpression Cr(LogicalExpression CrhNode){
 		if(token.categ == Categories.opImp){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			Node DNode = D();
-			Node Cr1hNode = new Node(lastToken, lastCateg, CrhNode, DNode);
+			LogicalExpression DNode = D();
+			LogicalExpression Cr1hNode = new Implication(lastToken, lastCateg, CrhNode, DNode);
 			return Cr(Cr1hNode);
 		}
 		else
 			return CrhNode;
 	}
 	
-	Node D(){
-		Node FNode = F();
+	LogicalExpression D(){
+		LogicalExpression FNode = F();
 		return Dr(FNode);
 	}
 	
-	Node Dr(Node DrhNode){
+	LogicalExpression Dr(LogicalExpression DrhNode){
 		if(token.categ == Categories.opDisj){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			Node FNode = F();
-			Node Dr1hNode = new Node(lastToken, lastCateg, DrhNode, FNode);
+			LogicalExpression FNode = F();
+			LogicalExpression Dr1hNode = new Disjunction(lastToken, lastCateg, DrhNode, FNode);
 			return Dr(Dr1hNode);
 		}
 		else
 			return DrhNode;
 	}
 	
-	Node F(){
-		Node GNode = G();
+	LogicalExpression F(){
+		LogicalExpression GNode = G();
 		return Fr(GNode);
 	}
 	
-	Node Fr(Node FrhNode){
+	LogicalExpression Fr(LogicalExpression FrhNode){
 		if(token.categ == Categories.opConj){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			Node GNode = G();
-			Node Fr1hNode = new Node(lastToken, lastCateg, FrhNode, GNode);
+			LogicalExpression GNode = G();
+			LogicalExpression Fr1hNode = new Conjunction(lastToken, lastCateg, FrhNode, GNode);
 			return Fr(Fr1hNode);
 		}
 		else
 			return FrhNode;
 	}
 	
-	Node G(){
-		Node GNode = null;
+	LogicalExpression G(){
+		LogicalExpression GNode = null;
 		if(token.categ == Categories.opNeg){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			Node HNode = H();
-			GNode = new Node(lastToken, lastCateg, HNode, null);
+			LogicalExpression HNode = H();
+			GNode = new Negation(lastToken, lastCateg, HNode, null);
 		}
 		else
 			GNode = H();
@@ -115,8 +115,8 @@ public class Parser {
 		return GNode;
 	}
 	
-	Node H(){
-		Node HNode = null;
+	LogicalExpression H(){
+		LogicalExpression HNode = null;
 		if(token.categ == Categories.abPar){
 			nextToken();
 			HNode = E();
@@ -128,7 +128,7 @@ public class Parser {
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();
-			HNode = new Node(lastToken, lastCateg, null, null);
+			HNode = new Atom(lastToken, lastCateg, null, null);
 		}
 		else if(token.categ != Categories.EOF)
 			error();

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Main {
 	
-	static void printAST(Node node){
+	static void printAST(LogicalExpression node){
 		if(node.left != null)
 			printAST(node.left);
 		if(node.right != null)
@@ -26,14 +26,17 @@ public class Main {
 //    	}
     	
     	Parser parser = new Parser(lexicalAnalyzer);
-    	Node AST;
+    	LogicalExpression AST;
     	
     	AST = parser.start();
     	
     	printAST(AST);
     	
-//    	RemImp remImp = new RemImp(lexicalAnalyzer);
-//    	remImp.start();
+    	System.out.println("AFTER:");
+    	
+    	AST.solve(AST);
+    	
+    	printAST(AST);
     	
 //		for(String token : parser.tokens){
 //    		System.out.print(token);
