@@ -9,9 +9,9 @@ public class Parser {
 		this.la = la;
 	}
 	
-	void start(){
+	Node start(){
 		nextToken();
-		E();
+		return E();
 	}
 	
 	void nextToken(){
@@ -23,76 +23,90 @@ public class Parser {
 		System.exit(0);
 	}
 
-	void E(){
-		C();
-		Er();
+	Node E(){
+		Node CNode = C();
+		return Er(CNode);
 	}
 	
-	void Er(){
+	Node Er(Node ErhNode){
 		if(token.categ == Categories.opBiImp){
+			Token lastToken = token;
 			nextToken();
-			C();
-			Er();
+			Node CNode = C();
+			Node Er1hNode = new Node(lastToken, ErhNode, CNode);
+			return Er(Er1hNode);
 		}
 		else
-			return;
+			return ErhNode;
 	}
 	
-	void C(){
-		D();
-		Cr();
+	Node C(){
+		Node DNode = D();
+		return Cr(DNode);
 	}
 	
-	void Cr(){
+	Node Cr(Node CrhNode){
 		if(token.categ == Categories.opImp){
+			Token lastToken = token;
 			nextToken();
-			D();
-			Cr();
+			Node DNode = D();
+			Node Cr1hNode = new Node(lastToken, CrhNode, DNode);
+			return Cr(Cr1hNode);
 		}
 		else
-			return;
+			return CrhNode;
 	}
 	
-	void D(){
-		F();
-		Dr();
+	Node D(){
+		Node FNode = F();
+		return Dr(FNode);
 	}
 	
-	void Dr(){
+	Node Dr(Node DrhNode){
 		if(token.categ == Categories.opDisj){
+			Token lastToken = token;
 			nextToken();
-			F();
-			Dr();
+			Node FNode = F();
+			Node Dr1hNode = new Node(lastToken, DrhNode, FNode);
+			return Dr(Dr1hNode);
 		}
 		else
-			return;
+			return DrhNode;
 	}
 	
-	void F(){
-		G();
-		Fr();
+	Node F(){
+		Node GNode = G();
+		return Fr(GNode);
 	}
 	
-	void Fr(){
+	Node Fr(Node FrhNode){
 		if(token.categ == Categories.opConj){
+			Token lastToken = token;
 			nextToken();
-			G();
-			Fr();
+			Node GNode = G();
+			Node Fr1hNode = new Node(lastToken, FrhNode, GNode);
+			return Fr(Fr1hNode);
 		}
 		else
-			return;
+			return FrhNode;
 	}
 	
-	void G(){
+	Node G(){
+		Node GNode = null;
 		if(token.categ == Categories.opNeg){
+			Token lastToken = token;
 			nextToken();
-			H();
+			Node HNode = H();
+			GNode = new Node(lastToken, HNode, null);
 		}
 		else
-			H();
+			GNode = H();
+		
+		return GNode;
 	}
 	
-	void H(){
+	Node H(){
+		Node HNode = null;
 		if(token.categ == Categories.abPar){
 			nextToken();
 			E();
@@ -100,10 +114,15 @@ public class Parser {
 				error();
 			nextToken();
 		}
-		else if(token.categ == Categories.id)
+		else if(token.categ == Categories.id){
+			Token lastToken = token;
 			nextToken();
+			HNode = new Node(lastToken, null, null);
+		}
 		else if(token.categ != Categories.EOF)
 			error();
+
+		return HNode;
 	}
 	
 }

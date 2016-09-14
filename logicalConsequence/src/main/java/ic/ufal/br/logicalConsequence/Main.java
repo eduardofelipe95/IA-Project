@@ -5,6 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
+	
+	static void printAST(Node node){
+		node.token.toString();
+		if(node.left != null)
+			printAST(node.left);
+		if(node.right != null)
+			printAST(node.right);
+	}
+	
+	
     public static void main( String[] args ) throws IOException{
     	LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer("teste.txt");
     	
@@ -15,14 +25,18 @@ public class Main {
 //        	token = lexicalAnalyzer.nextToken();
 //    	}
     	
-//    	Parser parser = new Parser(lexicalAnalyzer);
-//    	parser.start();
+    	Parser parser = new Parser(lexicalAnalyzer);
+    	Node AST;
     	
-    	RemImp remImp = new RemImp(lexicalAnalyzer);
-    	remImp.start();
+    	AST = parser.start();
     	
-		for(String token : remImp.tokens){
-    		System.out.print(token);
-    	}
+    	printAST(AST);
+    	
+//    	RemImp remImp = new RemImp(lexicalAnalyzer);
+//    	remImp.start();
+    	
+//		for(String token : remImp.tokens){
+//    		System.out.print(token);
+//    	}
     }
 }
