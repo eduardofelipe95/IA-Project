@@ -6,18 +6,20 @@ public class Implication extends LogicalExpression {
 		super(token, categ, left, right);
 	}
 	
-	void solve(LogicalExpression node){
-		if(node.categ == Categories.opImp){
-			LogicalExpression neg = new Negation("~", Categories.opNeg, node.left, null);
-			LogicalExpression disj = new Disjunction("v", Categories.opDisj, neg, node.right);
-			node = disj;
-		}
-		else{
-			if(node.right != null)
-				solve(node.right);
-			if(node.left != null)
-				solve(node.left);
-		}
+	LogicalExpression solve(){
+		if(this.left != null)
+			this.left = this.left.solve();
+		if(this.right != null)
+			this.right = this.right.solve();
+		
+//		if(this.categ == Categories.opImp){
+			LogicalExpression neg = new Negation("~", Categories.opNeg, this.left, null);
+			LogicalExpression disj = new Disjunction("v", Categories.opDisj, neg, this.right);
+			
+			return disj;
+//		}
+		
+//		return this;
 	}
 
 }

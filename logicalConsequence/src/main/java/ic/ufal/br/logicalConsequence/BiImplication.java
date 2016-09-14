@@ -6,9 +6,7 @@ public class BiImplication extends LogicalExpression {
 		super(token, categ, left, right);
 	}
 	
-	void solve(LogicalExpression node){
-		if(node.categ == Categories.opImp){
-			
-		}
+	LogicalExpression solve() {
+		return this;
 	}
 }

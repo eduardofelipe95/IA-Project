@@ -6,8 +6,10 @@ public class Disjunction extends LogicalExpression {
 		super(token, categ, left, right);
 	}
 
-	void solve(LogicalExpression node) {
+	LogicalExpression solve() {
 		
+		
+		return this;
 	}
 
 }

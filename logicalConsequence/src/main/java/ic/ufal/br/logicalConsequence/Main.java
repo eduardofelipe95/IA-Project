@@ -34,7 +34,7 @@ public class Main {
     	
     	System.out.println("AFTER:");
     	
-    	AST.solve(AST);
+    	AST = AST.solve();
     	
     	printAST(AST);
     	

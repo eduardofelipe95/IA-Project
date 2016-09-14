@@ -14,5 +14,5 @@ public abstract class LogicalExpression {
 		this.left = left;
 	}
 	
-	abstract void solve(LogicalExpression node);
+	abstract LogicalExpression solve();
 }
