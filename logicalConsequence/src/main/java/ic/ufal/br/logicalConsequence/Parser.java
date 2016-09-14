@@ -1,9 +1,12 @@
 package ic.ufal.br.logicalConsequence;
 
+import java.util.ArrayList;
+
 public class Parser {
 	
 	private Token token;
 	private LexicalAnalyzer la;
+	ArrayList<String> tokens = new ArrayList<String>();
 	
 	public Parser(LexicalAnalyzer la){
 		this.la = la;
@@ -15,7 +18,9 @@ public class Parser {
 	}
 	
 	void nextToken(){
-		this.token = la.nextToken();
+		token = la.nextToken();
+		tokens.add(token.lexVal());
+		System.out.println(token.toString());
 	}
 	
 	void error(){
@@ -30,10 +35,11 @@ public class Parser {
 	
 	Node Er(Node ErhNode){
 		if(token.categ == Categories.opBiImp){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
 			Node CNode = C();
-			Node Er1hNode = new Node(lastToken, ErhNode, CNode);
+			Node Er1hNode = new Node(lastToken, lastCateg, ErhNode, CNode);
 			return Er(Er1hNode);
 		}
 		else
@@ -47,10 +53,11 @@ public class Parser {
 	
 	Node Cr(Node CrhNode){
 		if(token.categ == Categories.opImp){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
 			Node DNode = D();
-			Node Cr1hNode = new Node(lastToken, CrhNode, DNode);
+			Node Cr1hNode = new Node(lastToken, lastCateg, CrhNode, DNode);
 			return Cr(Cr1hNode);
 		}
 		else
@@ -64,10 +71,11 @@ public class Parser {
 	
 	Node Dr(Node DrhNode){
 		if(token.categ == Categories.opDisj){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
 			Node FNode = F();
-			Node Dr1hNode = new Node(lastToken, DrhNode, FNode);
+			Node Dr1hNode = new Node(lastToken, lastCateg, DrhNode, FNode);
 			return Dr(Dr1hNode);
 		}
 		else
@@ -81,10 +89,11 @@ public class Parser {
 	
 	Node Fr(Node FrhNode){
 		if(token.categ == Categories.opConj){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
 			Node GNode = G();
-			Node Fr1hNode = new Node(lastToken, FrhNode, GNode);
+			Node Fr1hNode = new Node(lastToken, lastCateg, FrhNode, GNode);
 			return Fr(Fr1hNode);
 		}
 		else
@@ -94,10 +103,11 @@ public class Parser {
 	Node G(){
 		Node GNode = null;
 		if(token.categ == Categories.opNeg){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
 			Node HNode = H();
-			GNode = new Node(lastToken, HNode, null);
+			GNode = new Node(lastToken, lastCateg, HNode, null);
 		}
 		else
 			GNode = H();
@@ -109,15 +119,16 @@ public class Parser {
 		Node HNode = null;
 		if(token.categ == Categories.abPar){
 			nextToken();
-			E();
+			HNode = E();
 			if(token.categ != Categories.fcPar)
 				error();
 			nextToken();
 		}
 		else if(token.categ == Categories.id){
-			Token lastToken = token;
+			String lastToken = token.lexVal();
+			Categories lastCateg = token.categ;
 			nextToken();
-			HNode = new Node(lastToken, null, null);
+			HNode = new Node(lastToken, lastCateg, null, null);
 		}
 		else if(token.categ != Categories.EOF)
 			error();

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public class Main {
 	
 	static void printAST(Node node){
-		node.token.toString();
 		if(node.left != null)
 			printAST(node.left);
 		if(node.right != null)
 			printAST(node.right);
+		System.out.println(node.token);
 	}
 	
 	
@@ -35,8 +35,9 @@ public class Main {
 //    	RemImp remImp = new RemImp(lexicalAnalyzer);
 //    	remImp.start();
     	
-//		for(String token : remImp.tokens){
+//		for(String token : parser.tokens){
 //    		System.out.print(token);
 //    	}
     }
+    
 }
