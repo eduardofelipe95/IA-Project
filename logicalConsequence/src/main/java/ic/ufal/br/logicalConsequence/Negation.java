@@ -7,7 +7,34 @@ public class Negation extends LogicalExpression {
 	}
 
 	LogicalExpression solve() {
-		return this;
+		if(this.left != null)
+			this.left = this.left.solve();
+		if(this.right != null)
+			this.right = this.right.solve();
+		
+		return deMorgan(this.left);
+	}
+	
+	LogicalExpression deMorgan(LogicalExpression node){
+		if(node.categ == Categories.opConj){
+			node.token = "v";
+			node.categ = Categories.opDisj;
+		}
+		else if(node.categ == Categories.opDisj){
+			node.token = "^";
+			node.categ = Categories.opConj;
+		}
+		else if(node.categ == Categories.id){
+			node.token = "~" + node.token;
+			node.categ = Categories.nid;
+		}
+		
+		if(node.left != null)
+			node.left = deMorgan(node.left);
+		if(node.right != null)
+			node.right = deMorgan(node.right);
+		
+		return node;
 	}
 	
 }

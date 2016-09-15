@@ -5,12 +5,15 @@ public enum Categories {
 	fcCh,
 	abPar,
 	fcPar,
-	id, 
+	id,
+	nid,
 	opConj, 
 	opDisj,
 	opNeg,
-	opImp, 
-	opBiImp, 
+	opImp,
+	opBiImp,
+	prTrue,
+	prFalse,
 	unknown,
 	EOF
 }
