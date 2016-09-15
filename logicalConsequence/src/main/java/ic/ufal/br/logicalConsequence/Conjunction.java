@@ -28,6 +28,24 @@ public class Conjunction extends LogicalExpression {
 				}
 			}
 		}
+		else if(this.right.categ == Categories.prFalse || this.left.categ == Categories.prFalse){
+			this.token = "false";
+			this.categ = Categories.prFalse;
+			this.left = null;
+			this.right = null;
+		}
+		else if(this.right.categ == Categories.prTrue && this.left.categ == Categories.prTrue){
+			this.token = "true";
+			this.categ = Categories.prTrue;
+			this.left = null;
+			this.right = null;
+		}
+		else if(this.right.categ == Categories.prTrue && this.left.categ != Categories.prTrue){
+			return this.left;
+		}
+		else if(this.right.categ != Categories.prTrue && this.left.categ == Categories.prTrue){
+			return this.right;
+		}
 		
 		return this;
 	}

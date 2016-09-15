@@ -124,7 +124,7 @@ public class Parser {
 				error();
 			nextToken();
 		}
-		else if(token.categ == Categories.id){
+		else if(token.categ == Categories.id || token.categ == Categories.prTrue || token.categ == Categories.prFalse){
 			String lastToken = token.lexVal();
 			Categories lastCateg = token.categ;
 			nextToken();

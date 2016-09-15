@@ -83,9 +83,9 @@ public class LexicalAnalyzer {
 			return Categories.opImp;
 		else if(token.equals("<->"))
 			return Categories.opBiImp;
-		else if(token.equals("true"))
+		else if(token.equals("T"))
 			return Categories.prTrue;
-		else if(token.equals("false"))
+		else if(token.equals("F"))
 			return Categories.prFalse;
 		else if(token.matches("[a-zA-Z]"))
 			return Categories.id;
