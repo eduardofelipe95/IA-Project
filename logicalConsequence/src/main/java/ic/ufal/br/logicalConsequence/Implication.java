@@ -16,6 +16,8 @@ public class Implication extends LogicalExpression {
 			LogicalExpression neg = new Negation("~", Categories.opNeg, this.left, null);
 			LogicalExpression disj = new Disjunction("v", Categories.opDisj, neg, this.right);
 			
+			disj.solve();
+			
 			return disj;
 //		}
 		

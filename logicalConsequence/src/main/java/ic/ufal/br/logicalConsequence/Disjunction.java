@@ -30,16 +30,20 @@ public class Disjunction extends LogicalExpression {
 			}
 		}
 		else if(this.right.categ == Categories.prTrue || this.left.categ == Categories.prTrue){
-			this.token = "true";
-			this.categ = Categories.prTrue;
-			this.left = null;
-			this.right = null;
+//			this.token = "true";
+//			this.categ = Categories.prTrue;
+//			this.left = null;
+//			this.right = null;
+			
+			return new Atom("true", Categories.prTrue, null, null);
 		}
 		else if(this.right.categ == Categories.prFalse && this.left.categ == Categories.prFalse){
-			this.token = "false";
-			this.categ = Categories.prFalse;
-			this.left = null;
-			this.right = null;
+//			this.token = "false";
+//			this.categ = Categories.prFalse;
+//			this.left = null;
+//			this.right = null;
+			
+			return new Atom("false", Categories.prFalse, null, null);
 		}
 		else if(this.right.categ == Categories.prFalse && this.left.categ != Categories.prFalse){
 			return this.left;
