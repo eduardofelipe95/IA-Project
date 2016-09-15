@@ -25,8 +25,7 @@ public class Negation extends LogicalExpression {
 			node.categ = Categories.opConj;
 		}
 		else if(node.categ == Categories.id){
-			node.token = "~" + node.token;
-			node.categ = Categories.nid;
+			node.nid = true;
 		}
 		
 		if(node.left != null)

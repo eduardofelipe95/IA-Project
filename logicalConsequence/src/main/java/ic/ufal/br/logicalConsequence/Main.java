@@ -11,7 +11,10 @@ public class Main {
 			printAST(node.left);
 		if(node.right != null)
 			printAST(node.right);
-		System.out.println(node.token);
+		if(node.nid == true)
+			System.out.println("~" + node.token);
+		else
+			System.out.println(node.token);
 	}
 	
 	
