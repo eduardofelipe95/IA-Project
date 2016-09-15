@@ -15,17 +15,24 @@ public class Disjunction extends LogicalExpression {
 		if(this.right.categ == Categories.id && this.left.categ == Categories.id){
 			if(this.right.token.equals(this.left.token)){
 				if(this.right.nid == true ^ this.left.nid == true){
-					this.token = "true";
-					this.categ = Categories.prTrue;
-					this.left = null;
-					this.right = null;
+//					this.token = "true";
+//					this.categ = Categories.prTrue;
+//					this.left = null;
+//					this.right = null;
+					
+					return new Atom("true", Categories.prTrue, null, null);
 				}
 				else{
-					this.nid = this.right.nid;
-					this.token = this.right.token;
-					this.categ = Categories.id;
-					this.left = null;
-					this.right = null;
+//					this.nid = this.right.nid;
+//					this.token = this.right.token;
+//					this.categ = Categories.id;
+//					this.left = null;
+//					this.right = null;
+					
+					LogicalExpression atom = new Atom(this.right.token, Categories.id, null, null);
+					atom.nid = this.right.nid;
+					
+					return atom;			
 				}
 			}
 		}
