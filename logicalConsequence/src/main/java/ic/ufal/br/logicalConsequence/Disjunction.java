@@ -21,6 +21,7 @@ public class Disjunction extends LogicalExpression {
 					this.right = null;
 				}
 				else{
+					this.nid = this.right.nid;
 					this.token = this.right.token;
 					this.categ = Categories.id;
 					this.left = null;
