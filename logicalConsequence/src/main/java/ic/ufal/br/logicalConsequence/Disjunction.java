@@ -16,7 +16,7 @@ public class Disjunction extends LogicalExpression {
 			if(this.right.token.equals(this.left.token)){
 				if(this.right.nid == true ^ this.left.nid == true){
 					this.token = "true";
-					this.categ = Categories.prFalse;
+					this.categ = Categories.prTrue;
 					this.left = null;
 					this.right = null;
 				}
@@ -46,6 +46,32 @@ public class Disjunction extends LogicalExpression {
 		}
 		else if(this.right.categ != Categories.prFalse && this.left.categ == Categories.prFalse){
 			return this.right;
+		}
+		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) && (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)){
+			LogicalExpression leftOp = this.left;
+			LogicalExpression rightDisj = new Disjunction("v", Categories.opDisj, leftOp.right, this.right);
+			
+			
+			this.left = leftOp.left;
+			leftOp.left = this;
+			leftOp.right = rightDisj;
+			
+			leftOp.solve();
+			
+			return leftOp;
+		}
+		else if((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj) && (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
+			LogicalExpression rightOp = this.right;
+			LogicalExpression leftDisj = new Disjunction("v", Categories.opDisj, this.left, rightOp.right);
+			
+			
+			this.right = rightOp.left;
+			rightOp.right = this;
+			rightOp.left = leftDisj;
+			
+			rightOp.solve();
+			
+			return rightOp;
 		}
 		
 		return this;

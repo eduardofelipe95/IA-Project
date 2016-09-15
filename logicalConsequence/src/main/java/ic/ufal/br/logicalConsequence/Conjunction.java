@@ -47,6 +47,32 @@ public class Conjunction extends LogicalExpression {
 		else if(this.right.categ != Categories.prTrue && this.left.categ == Categories.prTrue){
 			return this.right;
 		}
+		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) && (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)){
+			LogicalExpression leftOp = this.left;
+			LogicalExpression rightConj = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
+			
+			
+			this.left = leftOp.left;
+			leftOp.left = this;
+			leftOp.right = rightConj;
+			
+			leftOp.solve();
+			
+			return leftOp;
+		}
+		else if((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj) && (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
+			LogicalExpression rightOp = this.right;
+			LogicalExpression leftConj = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
+			
+			
+			this.right = rightOp.left;
+			rightOp.right = this;
+			rightOp.left = leftConj;
+			
+			rightOp.solve();
+			
+			return rightOp;
+		}
 		
 		return this;
 	}
