@@ -13,10 +13,16 @@ public class Conjunction extends LogicalExpression {
 			this.right = this.right.solve();
 		
 		if(this.right.categ == Categories.id && this.left.categ == Categories.id){
-			if(this.right.nid == true ^ this.left.nid == true){
-				if(this.right.token.equals(this.left.token)){
+			if(this.right.token.equals(this.left.token)){
+				if(this.right.nid == true ^ this.left.nid == true){
 					this.token = "false";
 					this.categ = Categories.prFalse;
+					this.left = null;
+					this.right = null;
+				}
+				else{
+					this.token = this.right.token;
+					this.categ = Categories.id;
 					this.left = null;
 					this.right = null;
 				}
