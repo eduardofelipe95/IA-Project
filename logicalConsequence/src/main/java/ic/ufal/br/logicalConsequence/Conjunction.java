@@ -59,32 +59,61 @@ public class Conjunction extends LogicalExpression {
 		else if(this.right.categ != Categories.prTrue && this.left.categ == Categories.prTrue){
 			return this.right;
 		}
-		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) && (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)){
-			LogicalExpression leftOp = this.left;
-			LogicalExpression rightConj = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
+		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) 
+				|| (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
+			LogicalExpression newLeft;
+			LogicalExpression newRight;
+			LogicalExpression newRoot;
+			LogicalExpression leftOp;
+			LogicalExpression rightOp;
 			
-			
-			this.left = leftOp.left;
-			leftOp.left = this;
-			leftOp.right = rightConj;
-			
-			leftOp.solve();
-			
-			return leftOp;
+			if(this.left.categ == Categories.opConj || this.left.categ == Categories.opDisj){
+				leftOp = this.left;
+				newRight = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
+				newLeft = new Conjunction("^", Categories.opConj, leftOp.left, this.right);
+			}
+			else{
+				rightOp = this.right;
+				newLeft = new Conjunction("^", Categories.opConj, this.left, rightOp.left);
+				newRight = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
+			}
+			if(this.left.categ == Categories.opConj || this.right.categ == Categories.opConj){
+				this.left = newLeft;
+				this.right = newRight;
+				this.solve();
+			}
+			else{
+				newRoot = new Disjunction("v", Categories.opDisj, newLeft, newRight);
+				newRoot.solve();
+				
+				return newRoot;
+			}
 		}
-		else if((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj) && (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
-			LogicalExpression rightOp = this.right;
-			LogicalExpression leftConj = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
-			
-			
-			this.right = rightOp.left;
-			rightOp.right = this;
-			rightOp.left = leftConj;
-			
-			rightOp.solve();
-			
-			return rightOp;
-		}
+//		else if ((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj)
+//				&& (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)) {
+//			LogicalExpression leftOp = this.left;
+//			LogicalExpression rightConj = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
+//
+//			this.left = leftOp.left;
+//			leftOp.left = this;
+//			leftOp.right = rightConj;
+//
+//			leftOp.solve();
+//
+//			return leftOp;
+//		} else if ((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj)
+//				&& (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)) {
+//			LogicalExpression rightOp = this.right;
+//			LogicalExpression leftConj = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
+//
+//			this.right = rightOp.left;
+//			rightOp.right = this;
+//			rightOp.left = leftConj;
+//
+//			rightOp.solve();
+//
+//			return rightOp;
+//		}
 		
 		return this;
 	}

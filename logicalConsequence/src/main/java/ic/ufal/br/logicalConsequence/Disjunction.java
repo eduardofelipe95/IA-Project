@@ -12,6 +12,7 @@ public class Disjunction extends LogicalExpression {
 		if(this.right != null)
 			this.right = this.right.solve();
 		
+		LogicalExpression newRoot;
 		if(this.right.categ == Categories.id && this.left.categ == Categories.id){
 			if(this.right.token.equals(this.left.token)){
 				if(this.right.nid == true ^ this.left.nid == true){
@@ -58,32 +59,61 @@ public class Disjunction extends LogicalExpression {
 		else if(this.right.categ != Categories.prFalse && this.left.categ == Categories.prFalse){
 			return this.right;
 		}
-		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) && (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)){
-			LogicalExpression leftOp = this.left;
-			LogicalExpression rightDisj = new Disjunction("v", Categories.opDisj, leftOp.right, this.right);
+		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) 
+				|| (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
+			LogicalExpression newLeft;
+			LogicalExpression newRight;
+			LogicalExpression leftOp;
+			LogicalExpression rightOp;
 			
-			
-			this.left = leftOp.left;
-			leftOp.left = this;
-			leftOp.right = rightDisj;
-			
-			leftOp.solve();
-			
-			return leftOp;
+			if(this.left.categ == Categories.opConj || this.left.categ == Categories.opDisj){
+				leftOp = this.left;
+				newRight = new Disjunction("v", Categories.opDisj, leftOp.right, this.right);
+				newLeft = new Disjunction("v", Categories.opDisj, leftOp.left, this.right);
+			}
+			else{
+				rightOp = this.right;
+				newLeft = new Disjunction("v", Categories.opDisj, this.left, rightOp.left);
+				newRight = new Disjunction("v", Categories.opDisj, this.left, rightOp.right);
+			}
+			if(this.left.categ == Categories.opDisj || this.right.categ == Categories.opDisj){
+				this.left = newLeft;
+				this.right = newRight;
+				this.solve();
+			}
+			else{
+				newRoot = new Conjunction("^", Categories.opConj, newLeft, newRight);
+				newRoot.solve();
+				
+				return newRoot;
+			}
 		}
-		else if((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj) && (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
-			LogicalExpression rightOp = this.right;
-			LogicalExpression leftDisj = new Disjunction("v", Categories.opDisj, this.left, rightOp.right);
-			
-			
-			this.right = rightOp.left;
-			rightOp.right = this;
-			rightOp.left = leftDisj;
-			
-			rightOp.solve();
-			
-			return rightOp;
-		}
+//		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) && (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)){
+//			LogicalExpression leftOp = this.left;
+//			LogicalExpression rightDisj = new Disjunction("v", Categories.opDisj, leftOp.right, this.right);
+//			
+//			
+//			this.left = leftOp.left;
+//			leftOp.left = this;
+//			leftOp.right = rightDisj;
+//			
+//			leftOp.solve();
+//			
+//			return leftOp;
+//		}
+//		else if((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj) && (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
+//			LogicalExpression rightOp = this.right;
+//			LogicalExpression leftDisj = new Disjunction("v", Categories.opDisj, this.left, rightOp.right);
+//			
+//			
+//			this.right = rightOp.left;
+//			rightOp.right = this;
+//			rightOp.left = leftDisj;
+//			
+//			rightOp.solve();
+//			
+//			return rightOp;
+//		}
 		
 		return this;
 	}
