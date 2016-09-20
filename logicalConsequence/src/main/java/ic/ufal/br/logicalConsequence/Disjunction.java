@@ -14,8 +14,8 @@ public class Disjunction extends LogicalExpression {
 		
 		LogicalExpression root = this;
 		
-		if((root.left.categ == Categories.opDisj || root.left.categ == Categories.opConj) 
-				|| (root.right.categ == Categories.opDisj || root.right.categ == Categories.opConj)){
+		if((root.left.categ != Categories.prFalse && root.left.categ != Categories.prTrue && (root.left.categ == Categories.opConj || root.left.categ == Categories.opDisj)) 
+			|| (root.right.categ != Categories.prFalse && root.right.categ != Categories.prTrue && (root.right.categ == Categories.opConj || root.right.categ == Categories.opDisj))){
 			LogicalExpression newLeft;
 			LogicalExpression newRight;
 			LogicalExpression leftOp;
@@ -34,13 +34,13 @@ public class Disjunction extends LogicalExpression {
 			if(root.left.categ == Categories.opDisj || root.right.categ == Categories.opDisj){
 				root.left = newLeft;
 				root.right = newRight;
-				root.solve();
+				//root.solve();
 			}
 			else{
 				root = new Conjunction("^", Categories.opConj, newLeft, newRight);
-				root.solve();
+				return root.solve();
 				
-				//return newRoot;
+				//return root;
 			}
 		}
 
