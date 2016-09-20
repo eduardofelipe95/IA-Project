@@ -12,110 +12,66 @@ public class Conjunction extends LogicalExpression {
 		if(this.right != null)
 			this.right = this.right.solve();
 		
-		if(this.right.categ == Categories.id && this.left.categ == Categories.id){
-			if(this.right.token.equals(this.left.token)){
-				if(this.right.nid == true ^ this.left.nid == true){
-//					this.token = "false";
-//					this.categ = Categories.prFalse;
-//					this.left = null;
-//					this.right = null;
-					
+		LogicalExpression root = this;
+		
+		if((root.left.categ == Categories.opDisj || root.left.categ == Categories.opConj) 
+				|| (root.right.categ == Categories.opDisj || root.right.categ == Categories.opConj)){
+			LogicalExpression newLeft;
+			LogicalExpression newRight;
+			LogicalExpression leftOp;
+			LogicalExpression rightOp;
+			
+			if(root.left.categ == Categories.opConj || root.left.categ == Categories.opDisj){
+				leftOp = root.left;
+				newRight = new Conjunction("^", Categories.opConj, leftOp.right, root.right);
+				newLeft = new Conjunction("^", Categories.opConj, leftOp.left, root.right);
+			}
+			else{
+				rightOp = root.right;
+				newLeft = new Conjunction("^", Categories.opConj, root.left, rightOp.left);
+				newRight = new Conjunction("^", Categories.opConj, root.left, rightOp.right);
+			}
+			if(root.left.categ == Categories.opConj || root.right.categ == Categories.opConj){
+				root.left = newLeft;
+				root.right = newRight;
+				root.solve();
+			}
+			else{
+				root = new Disjunction("v", Categories.opDisj, newLeft, newRight);
+				root.solve();
+				
+				//return root;
+			}
+		}
+		
+		if(root.right.categ == Categories.id && root.left.categ == Categories.id){
+			if(root.right.token.equals(root.left.token)){
+				if(root.right.nid == true ^ root.left.nid == true){
 					return new Atom("false", Categories.prFalse, null, null);
 				}
 				else{
-//					this.nid = this.right.nid;
-//					this.token = this.right.token;
-//					this.categ = Categories.id;
-//					this.left = null;
-//					this.right = null;
-					
-					LogicalExpression atom = new Atom(this.right.token, Categories.id, null, null);
-					atom.nid = this.right.nid;
+					LogicalExpression atom = new Atom(root.right.token, Categories.id, null, null);
+					atom.nid = root.right.nid;
 					
 					return atom;
 					
 				}
 			}
 		}
-		else if(this.right.categ == Categories.prFalse || this.left.categ == Categories.prFalse){
-//			this.token = "false";
-//			this.categ = Categories.prFalse;
-//			this.left = null;
-//			this.right = null;
-			
+		else if(root.right.categ == Categories.prFalse || root.left.categ == Categories.prFalse){
 			return new Atom("false", Categories.prFalse, null, null);
 		}
-		else if(this.right.categ == Categories.prTrue && this.left.categ == Categories.prTrue){
-//			this.token = "true";
-//			this.categ = Categories.prTrue;
-//			this.left = null;
-//			this.right = null;
-			
+		else if(root.right.categ == Categories.prTrue && root.left.categ == Categories.prTrue){
 			return new Atom("true", Categories.prTrue, null, null);
 		}
-		else if(this.right.categ == Categories.prTrue && this.left.categ != Categories.prTrue){
-			return this.left;
+		else if(root.right.categ == Categories.prTrue && root.left.categ != Categories.prTrue){
+			return root.left;
 		}
-		else if(this.right.categ != Categories.prTrue && this.left.categ == Categories.prTrue){
-			return this.right;
+		else if(root.right.categ != Categories.prTrue && root.left.categ == Categories.prTrue){
+			return root.right;
 		}
-		else if((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj) 
-				|| (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)){
-			LogicalExpression newLeft;
-			LogicalExpression newRight;
-			LogicalExpression newRoot;
-			LogicalExpression leftOp;
-			LogicalExpression rightOp;
-			
-			if(this.left.categ == Categories.opConj || this.left.categ == Categories.opDisj){
-				leftOp = this.left;
-				newRight = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
-				newLeft = new Conjunction("^", Categories.opConj, leftOp.left, this.right);
-			}
-			else{
-				rightOp = this.right;
-				newLeft = new Conjunction("^", Categories.opConj, this.left, rightOp.left);
-				newRight = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
-			}
-			if(this.left.categ == Categories.opConj || this.right.categ == Categories.opConj){
-				this.left = newLeft;
-				this.right = newRight;
-				this.solve();
-			}
-			else{
-				newRoot = new Disjunction("v", Categories.opDisj, newLeft, newRight);
-				newRoot.solve();
-				
-				return newRoot;
-			}
-		}
-//		else if ((this.left.categ == Categories.opDisj || this.left.categ == Categories.opConj)
-//				&& (this.right.categ != Categories.opDisj && this.right.categ != Categories.opConj)) {
-//			LogicalExpression leftOp = this.left;
-//			LogicalExpression rightConj = new Conjunction("^", Categories.opConj, leftOp.right, this.right);
-//
-//			this.left = leftOp.left;
-//			leftOp.left = this;
-//			leftOp.right = rightConj;
-//
-//			leftOp.solve();
-//
-//			return leftOp;
-//		} else if ((this.left.categ != Categories.opDisj && this.left.categ != Categories.opConj)
-//				&& (this.right.categ == Categories.opDisj || this.right.categ == Categories.opConj)) {
-//			LogicalExpression rightOp = this.right;
-//			LogicalExpression leftConj = new Conjunction("^", Categories.opConj, this.left, rightOp.right);
-//
-//			this.right = rightOp.left;
-//			rightOp.right = this;
-//			rightOp.left = leftConj;
-//
-//			rightOp.solve();
-//
-//			return rightOp;
-//		}
 		
-		return this;
+		return root;
 	}
 
 }
