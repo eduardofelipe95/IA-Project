@@ -1,7 +1,5 @@
 package ic.ufal.br.logicalConsequence;
 
-import java.beans.Expression;
-
 public class BiImplication extends LogicalExpression {
 	
 	BiImplication(String token, Categories categ, LogicalExpression left, LogicalExpression right){
@@ -9,50 +7,62 @@ public class BiImplication extends LogicalExpression {
 	}
 	
 	LogicalExpression solve() {
-		LogicalExpression leftChild, rightChild;
+		if(this.left != null)
+			this.left = this.left.solve();
+		if(this.right != null)
+			this.right = this.right.solve();
 		
-		leftChild = this.left;
-		rightChild = this.right;
+		LogicalExpression newRoot, newLeft, newRight;
+		newLeft = new Implication("->", Categories.opImp, this.left, this.right);
+		newRight = new Implication("->", Categories.opImp, null, null);
 		
-		this.token = "v";
-		this.categ = Categories.opDisj;
-		this.left = new Implication("->", Categories.opImp, leftChild, rightChild);
-		this.right = new Implication("->", Categories.opImp, null, null);
+		newRight.left = copyBranchAST(this.right);
+		newRight.right = copyBranchAST(this.left);
 		
-		this.copyBranchAST(this.right, rightChild, leftChild);
+		newRoot = new Conjunction("^", Categories.opConj, newLeft, newRight);
+		newRoot = newRoot.solve();
 		
-		this.solve();
-		
-		return this;
+		return newRoot;
 	}
 	
-	void copyBranchAST(LogicalExpression node, LogicalExpression subTreeLeft,
-			LogicalExpression subTreeRight){
+	LogicalExpression copyBranchAST(LogicalExpression node){
 		
-		if(subTreeLeft != null){
-			node.left = this.copy(subTreeLeft);
-			this.copyBranchAST(node.left, subTreeLeft, subTreeRight);
+		LogicalExpression newNode = copy(node);
+		
+		if(node.left != null){
+			//node.left = copy(subTreeLeft);
+			
+			newNode.left = copyBranchAST(node.left);
 		}
-		if(subTreeRight != null){
-			node.right = this.copy(subTreeRight);
-			this.copyBranchAST(node.right, subTreeLeft, subTreeRight);
+		if(node.right != null){
+			//node.right = copy(subTreeRight);
+			newNode.right = copyBranchAST(node.right);
 		}
 		
+		return newNode;
 	}
 	
 	LogicalExpression copy(LogicalExpression node){
-		if(node.categ == Categories.opConj){
-			return new Conjunction("^", Categories.opConj, null, null);
-		}else if(node.categ == Categories.opDisj){
-			return new Disjunction("v", Categories.opDisj, null, null);
-		}else if(node.categ == Categories.opImp){
-			return new Implication("->", Categories.opImp, null, null);
-		}else if(node.categ == Categories.opBiImp){
-			return new BiImplication("<->", Categories.opBiImp, null, null);
-		}else if(node.categ == Categories.opNeg){
-			return new Negation("~", Categories.opNeg, null, null);
-		}else{
-			return new Atom(node.token,Categories.id, null, null);
-		}
+		LogicalExpression newNode;
+		if(node.categ == Categories.opConj)
+			newNode = new Conjunction("^", Categories.opConj, null, null);
+		else if(node.categ == Categories.opDisj)
+			newNode = new Disjunction("v", Categories.opDisj, null, null);
+		else if(node.categ == Categories.opImp)
+			newNode = new Implication("->", Categories.opImp, null, null);
+		else if(node.categ == Categories.opBiImp)
+			newNode = new BiImplication("<->", Categories.opBiImp, null, null);
+		else if(node.categ == Categories.opNeg)
+			newNode = new Negation("~", Categories.opNeg, null, null);
+		else if(node.categ == Categories.id)
+			newNode = new Atom(node.token, Categories.id, null, null);
+		else if(node.categ == Categories.prTrue)
+			newNode = new Atom(node.token, Categories.prTrue, null, null);
+		else
+			newNode = new Atom(node.token, Categories.prFalse, null, null);
+		
+		newNode.nid = node.nid;
+		
+		return newNode;
 	}
 }

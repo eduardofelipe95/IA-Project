@@ -34,7 +34,9 @@ public class Disjunction extends LogicalExpression {
 			if(root.left.categ == Categories.opDisj || root.right.categ == Categories.opDisj){
 				root.left = newLeft;
 				root.right = newRight;
-				//root.solve();
+				root.solve();
+//				root.left.solve();
+//				root.right.solve();
 			}
 			else{
 				root = new Conjunction("^", Categories.opConj, newLeft, newRight);

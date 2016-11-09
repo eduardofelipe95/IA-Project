@@ -12,16 +12,12 @@ public class Implication extends LogicalExpression {
 		if(this.right != null)
 			this.right = this.right.solve();
 		
-//		if(this.categ == Categories.opImp){
 			LogicalExpression neg = new Negation("~", Categories.opNeg, this.left, null);
 			LogicalExpression disj = new Disjunction("v", Categories.opDisj, neg, this.right);
 			
-			disj.solve();
+			disj = disj.solve();
 			
 			return disj;
-//		}
-		
-//		return this;
 	}
 
 }
